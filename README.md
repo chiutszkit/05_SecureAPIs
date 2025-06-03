@@ -10,6 +10,14 @@
 python3 -m venv .venv
 ```
 
+### Create .env file (For First Time)
+```
+Create a .env file in this project root folder
+
+Add the following line to the .env file
+API_KEY=your_api_key_here  //any strings will do
+```
+
 ### Setup Proxy
 ```
 pip config set global.proxy http://proxy.my-proxy-domain.com:my-proxy-port
