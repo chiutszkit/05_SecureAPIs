@@ -44,24 +44,29 @@ The Flask App is configured for you. Running it on http://127.0.0.1:5000
 
 ## Sample Requests
 
-Type the command(s) in another Terminal when Running the App
+### Method 1: Using Swagger UI
+```
+http://127.0.0.1:5000/api/docs
+```
+
+### Method 2: Using curl (Please make sure to replace your_api_key_here with your actual API key)
 
 ### Create a new todo:
 ```
-curl -X POST http://localhost:5000/todos -H "Content-Type: application/json" -d '{"title": "Learn Flask", "description": "Study Flask documentation"}'
+curl -X POST http://localhost:5000/todos -H "Content-Type: application/json" -H "X-API-Key: your_api_key_here" -d '{"title": "Learn Flask", "description": "Study Flask documentation"}'
 ```
 
 ### Get all todos:
 ```
-curl http://localhost:5000/todos
+curl http://localhost:5000/todos -H "X-API-Key: your_api_key_here"
 ```
 
 ### Update a todo:
 ```
-curl -X PUT http://localhost:5000/todos/1 -H "Content-Type: application/json" -d '{"completed": true}'
-```
+curl -X PUT http://localhost:5000/todos/1 -H "Content-Type: application/json" -H "X-API-Key: your_api_key_here" -d '{"completed": true}'
+``` 
 
 ### Delete a todo:
 ```
-curl -X DELETE http://localhost:5000/todos/1
+curl -X DELETE http://localhost:5000/todos/1 -H "X-API-Key: your_api_key_here"
 ```

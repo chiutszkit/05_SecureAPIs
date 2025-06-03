@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from dotenv import load_dotenv
 import os
+from flask_swagger_ui import get_swaggerui_blueprint
 
 # Load environment variables
 load_dotenv()
@@ -109,6 +110,28 @@ def delete_todo(todo_id):
     db.session.delete(todo)
     db.session.commit()
     return '', 204
+
+# Configure Swagger UI
+SWAGGER_URL = '/api/docs'  # URL for accessing Swagger UI
+API_URL = '/api/openapi.yaml'  # URL for the OpenAPI specification
+
+# Create Swagger UI blueprint
+swaggerui_blueprint = get_swaggerui_blueprint(
+    SWAGGER_URL,
+    API_URL,
+    config={
+        'app_name': "Todo API"
+    }
+)
+
+# Register Swagger UI blueprint
+app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
+
+# Serve OpenAPI specification
+@app.route('/api/openapi.yaml')
+def openapi_spec():
+    with open('openapi.yaml', 'r') as f:
+        return f.read()
 
 if __name__ == '__main__':
     app.run(debug=True)
