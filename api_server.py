@@ -1,6 +1,11 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+from dotenv import load_dotenv
+import os
+
+# Load environment variables
+load_dotenv()
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///todo.db'
@@ -17,7 +22,22 @@ class Todo(db.Model):
 with app.app_context():
     db.create_all()
 
+# API Key Configuration
+API_KEY = os.getenv('API_KEY')
+if not API_KEY:
+    raise ValueError("API_KEY environment variable is not set")
+
+def require_api_key(f):
+    def wrapper(*args, **kwargs):
+        api_key = request.headers.get('X-API-Key')
+        if not api_key or api_key != API_KEY:
+            return jsonify({'error': 'Invalid or missing API key'}), 401
+        return f(*args, **kwargs)
+    wrapper.__name__ = f.__name__
+    return wrapper
+
 @app.route('/todos', methods=['GET'])
+@require_api_key
 def get_todos():
     todos = Todo.query.all()
     return jsonify([{
@@ -29,6 +49,7 @@ def get_todos():
     } for todo in todos])
 
 @app.route('/todos', methods=['POST'])
+@require_api_key
 def create_todo():
     data = request.get_json()
     if not data or 'title' not in data:
@@ -51,6 +72,7 @@ def create_todo():
     }), 201
 
 @app.route('/todos/<int:todo_id>', methods=['GET'])
+@require_api_key
 def get_todo(todo_id):
     todo = Todo.query.get_or_404(todo_id)
     return jsonify({
@@ -62,6 +84,7 @@ def get_todo(todo_id):
     })
 
 @app.route('/todos/<int:todo_id>', methods=['PUT'])
+@require_api_key
 def update_todo(todo_id):
     todo = Todo.query.get_or_404(todo_id)
     data = request.get_json()
@@ -80,6 +103,7 @@ def update_todo(todo_id):
     })
 
 @app.route('/todos/<int:todo_id>', methods=['DELETE'])
+@require_api_key
 def delete_todo(todo_id):
     todo = Todo.query.get_or_404(todo_id)
     db.session.delete(todo)

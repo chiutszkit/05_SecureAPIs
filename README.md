@@ -1,6 +1,6 @@
-<h1>HW_02/h1>
+<h1>HW_05_SecureAPI</h1>
 
-<h3>This is a Python Project to server API Requests</h3>
+<h3>This is a Python Project to serve API Requests With API Key Authentication</h3>
 
 ## How To Use Python
 
